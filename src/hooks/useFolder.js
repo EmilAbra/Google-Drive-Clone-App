@@ -9,7 +9,7 @@ const ACTIONS = {
   SET_CHILD_FILES: "set-child-files", 
 }
 
-const ROOT_FOLDER = { name: "Root", id: null, path: [] }
+export const ROOT_FOLDER = { name: "Root", id: null, path: [] }
 
 function reducer(state, { type, payload }) {
   switch (type) {
@@ -20,21 +20,21 @@ function reducer(state, { type, payload }) {
         childFolders: [],
         childFiles: []
       }
-      case ACTIONS.UPDATE_FOLDER:
-        return {
-          ...state,
-          folder: payload.folder
-        }
-      case ACTIONS.SET_CHILD_FOLDERS:
-        return {
-          ...state,
-          childFolders: payload.childFolders,
-        }
-      case ACTIONS.SET_CHILD_FILES:
-        return {
-          ...state,
-          childFiles: payload.childFiles,
-        }
+    case ACTIONS.UPDATE_FOLDER:
+      return {
+        ...state,
+        folder: payload.folder
+      }
+    case ACTIONS.SET_CHILD_FOLDERS:
+      return {
+        ...state,
+        childFolders: payload.childFolders,
+      }
+    case ACTIONS.SET_CHILD_FILES:
+      return {
+        ...state,
+        childFiles: payload.childFiles,
+      }
     default:
       return state;
   }
@@ -93,6 +93,21 @@ export function useFolder(folderId = null, folder = null) {
           }
         })
       })
+  }, [folderId, currentUser])
+
+  useEffect(() => {
+    return (
+      database.files
+        .where("folderId", "==", folderId)
+        .where("userId", "==", currentUser.uid)
+        // .orderBy("createdAt")
+        .onSnapshot(snapshot => {
+          dispatch({
+            type: ACTIONS.SET_CHILD_FILES,
+            payload: { childFiles: snapshot.docs.map(database.formatDoc) },
+          })
+        })
+    )
   }, [folderId, currentUser])
 
   return state

@@ -1,25 +1,43 @@
 import React from 'react'
 import Navbar from './Navbar'
 import Folder from './Folder'
-import { Container } from 'react-bootstrap'
 import AddFolderBtn from './AddFolderBtn'
+import AddFileBtn from './AddFileBtn'
+import FolderBreadcrumbs from './FolderBreadcrumbs'
+import File from './File'
+import { Container } from 'react-bootstrap'
 import { useFolder } from '../../hooks/useFolder'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 
 export default function Dashboard() {
   const { folderId } = useParams()
-  const { folder, childFolders } = useFolder(folderId)
-  // console.log(childFolders);
+  const { state = {} } = useLocation()
+  const { folder, childFolders, childFiles } = useFolder(folderId, state?.folder)
+ 
   return (
     <>
       <Navbar />
       <Container fluid>
-        <AddFolderBtn currentFolder={folder} />
+        <div className="d-flex align-items-center">
+          <FolderBreadcrumbs currentFolder={folder} />  
+          <AddFileBtn currentFolder={folder} />
+          <AddFolderBtn currentFolder={folder} />
+        </div>
         {childFolders.length > 0 && (
           <div className="d-flex flex-wrap">
             {childFolders.map(childFolder => (
               <div key={childFolder.id} style={{ maxWidth: "250px" }} className='p-2'>
                 <Folder folder={childFolder} />
+              </div>
+            ))}
+          </div>
+        )}
+        {childFolders.length > 0 && childFiles.length > 0 && <hr />}
+        {childFiles.length > 0 && (
+          <div className="d-flex flex-wrap">
+            {childFiles.map(childFile => (
+              <div key={childFile.id} style={{ maxWidth: "250px" }} className='p-2'>
+                <File file={childFile} />
               </div>
             ))}
           </div>

@@ -35,8 +35,7 @@ function App() {
               <Route path='/signup' Component={Signup} />
               <Route path='/login' Component={Login} />
               <Route path='/forgot-password' Component={ForgotPassword} />
-              <Route path='/update-profile' Component={UpdateProfile} />
-             
+
              
               {/* Profile */}
               <Route path="/user"
@@ -46,7 +45,7 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              <Route path="update-profile"
+              <Route path="/user/update-profile"
                 element={
                   <PrivateRoute>
                     <UpdateProfile />
